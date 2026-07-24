@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#020408" />
+  <title>TVR Dubbers — Bangla Donghua</title>
+  <meta name="description" content="TVR Dubbers — Bangla-dubbed donghua. We Believe in Quality." />
+  <meta property="og:title" content="TVR Dubbers — Bangla Donghua" />
+  <meta property="og:description" content="Bangla-dubbed donghua streaming. We Believe in Quality." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="icon" href="/favicon.ico" />
+</head>
+<body class="dark">
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div id="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="brand">
+      <h1 id="site-title" class="cycle">TVR Dubbers</h1>
+      <p id="site-motto" class="motto">We Believe in Quality</p>
+    </div>
+    <div class="header-tools">
+      <div class="search-wrap">
+        <input id="search" type="search" placeholder="Search episodes…" autocomplete="off" />
+        <div id="search-results" class="search-results" hidden></div>
+      </div>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        <span class="sun">☀</span><span class="moon">☾</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <span class="badge">Now Streaming — in Bangla Dub</span>
+      <h2 class="hero-title cycle">Battle Through the Heavens</h2>
+      <div class="hero-cta">
+        <button id="watch-now" class="btn btn-primary">▶ Watch Now</button>
+        <button id="watch-trailer" class="btn btn-ghost">◈ Upcoming Episode</button>
+      </div>
+    </section>
+
+    <section class="countdown-section" id="countdown-section" hidden>
+      <p class="countdown-label">Next Episode In</p>
+      <div class="countdown glass">
+        <div><span id="cd-days">00</span><small>Days</small></div>
+        <div><span id="cd-hours">00</span><small>Hours</small></div>
+        <div><span id="cd-mins">00</span><small>Min</small></div>
+        <div><span id="cd-secs">00</span><small>Sec</small></div>
+      </div>
+    </section>
+
+    <section class="special-section" id="special-section">
+      <div class="special-tile glass" id="special-tile">
+        <div class="special-thumb"><img id="special-thumb-img" alt="" loading="lazy" /></div>
+        <div class="special-meta">
+          <h3 class="cycle">Special Episode</h3>
+          <p id="special-label">Season 1, 18 Episodes 4K</p>
+        </div>
+      </div>
+      <div class="special-strip" id="special-strip"></div>
+    </section>
+
+    <section class="episodes-section">
+      <div class="section-head">
+        <h3 class="cycle">All Episodes</h3>
+        <div class="genre-chips" id="genre-chips"></div>
+      </div>
+      <div class="episode-grid" id="episode-grid">
+        <div class="skeleton"></div><div class="skeleton"></div>
+        <div class="skeleton"></div><div class="skeleton"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="caption cycle">For the Fans, by The Fans</p>
+    <p class="team-leader">Team Leader: <strong>Rocky</strong></p>
+    <div class="artists glass">
+      <h4>Voice Artists</h4>
+      <ul id="artists-list"></ul>
+    </div>
+    <div class="socials" id="socials"></div>
+    <p class="contact"><a id="contact-telegram" href="#">Contact us on Telegram</a></p>
+    <p class="footer-title cycle" id="footer-title">TVR Dubbers</p>
+    <p class="rights">All Rights Reserved © <span id="footer-year"></span> TVR Dubbers</p>
+  </footer>
+
+  <!-- Special fullscreen -->
+  <div id="special-full" class="special-full" hidden>
+    <button class="close" id="special-close" aria-label="Close">✕</button>
+    <h2 class="cycle">Special Episodes</h2>
+    <div class="episode-grid" id="special-full-grid"></div>
+  </div>
+
+  <!-- Player modal -->
+  <div id="player-modal" class="modal" hidden>
+    <div class="modal-panel glass">
+      <button class="close" id="player-close" aria-label="Close">✕</button>
+      <h3 id="player-title" class="cycle"></h3>
+      <div class="server-tabs">
+        <button class="tab active" data-server="primary">Primary</button>
+        <button class="tab" data-server="backup">Backup</button>
+      </div>
+      <div class="player-frame">
+        <iframe id="player-iframe" allow="autoplay; encrypted-media; fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe>
+      </div>
+      <div class="reactions">
+        <div class="reaction-bar" id="reaction-bar"></div>
+        <div class="reaction-counts" id="reaction-counts"></div>
+      </div>
+      <div class="comments">
+        <h4>Comments</h4>
+        <form id="comment-form" class="comment-form">
+          <input name="nickname" placeholder="Nickname (optional)" maxlength="40" />
+          <textarea name="body" placeholder="Write a comment…" maxlength="800" required></textarea>
+          <button type="submit" class="btn btn-primary">Post</button>
+        </form>
+        <ul id="comment-list" class="comment-list"></ul>
+      </div>
+      <button id="next-episode" class="btn btn-ghost next-btn">Next Episode ▸</button>
+    </div>
+  </div>
+
+  <!-- Admin password modal -->
+  <div id="admin-modal" class="modal" hidden>
+    <div class="modal-panel glass small">
+      <button class="close" id="admin-close" aria-label="Close">✕</button>
+      <h3 class="cycle">Admin Access</h3>
+      <form id="admin-login-form">
+        <input type="password" name="password" placeholder="Password" required autofocus />
+        <button class="btn btn-primary" type="submit">Enter</button>
+        <p id="admin-login-error" class="err" hidden>Incorrect password.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="./config.js"></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>

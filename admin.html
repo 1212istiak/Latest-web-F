@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TVR Dubbers — Admin</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="dark admin-body">
+  <header class="site-header">
+    <div class="brand"><h1 class="cycle">TVR Dubbers — Admin</h1></div>
+    <div class="header-tools">
+      <a class="btn btn-ghost" href="/">← Back to site</a>
+      <button id="logout" class="btn btn-ghost">Logout</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <section id="admin-login" class="glass card">
+      <h2>Login</h2>
+      <form id="login-form">
+        <input type="password" name="password" placeholder="Admin password" required />
+        <button class="btn btn-primary" type="submit">Log in</button>
+      </form>
+    </section>
+
+    <div id="admin-panel" hidden>
+      <nav class="admin-tabs">
+        <button data-tab="upload" class="active">Upload Episode</button>
+        <button data-tab="trailer">Trailer</button>
+        <button data-tab="episodes">Edit/Delete</button>
+        <button data-tab="settings">Site Settings</button>
+        <button data-tab="links">Links</button>
+        <button data-tab="artists">Voice Artists</button>
+        <button data-tab="password">Password</button>
+        <button data-tab="comments">Comments</button>
+      </nav>
+
+      <section data-panel="upload" class="glass card">
+        <h2>Upload New Episode</h2>
+        <form id="upload-form" class="grid-form"></form>
+      </section>
+
+      <section data-panel="trailer" class="glass card" hidden>
+        <h2>Upload / Update Trailer</h2>
+        <form id="trailer-form" class="grid-form"></form>
+      </section>
+
+      <section data-panel="episodes" class="glass card" hidden>
+        <h2>Edit / Delete Episodes</h2>
+        <ul id="episodes-list" class="items-list"></ul>
+      </section>
+
+      <section data-panel="settings" class="glass card" hidden>
+        <h2>Site Settings</h2>
+        <form id="settings-form" class="grid-form"></form>
+      </section>
+
+      <section data-panel="links" class="glass card" hidden>
+        <h2>Update Links</h2>
+        <form id="links-form" class="grid-form"></form>
+      </section>
+
+      <section data-panel="artists" class="glass card" hidden>
+        <h2>Voice Artists</h2>
+        <form id="artist-form"><input name="name" placeholder="Full name" required /><button class="btn btn-primary">Add</button></form>
+        <ul id="artists-admin-list" class="items-list"></ul>
+      </section>
+
+      <section data-panel="password" class="glass card" hidden>
+        <h2>Change Admin Password</h2>
+        <form id="password-form" class="grid-form">
+          <label>Current<input type="password" name="current" required></label>
+          <label>New<input type="password" name="next" required minlength="6"></label>
+          <label>Confirm<input type="password" name="confirm" required minlength="6"></label>
+          <button class="btn btn-primary">Update</button>
+        </form>
+      </section>
+
+      <section data-panel="comments" class="glass card" hidden>
+        <h2>Comment Moderation</h2>
+        <ul id="comments-mod-list" class="items-list"></ul>
+      </section>
+    </div>
+  </main>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="./config.js"></script>
+  <script src="./admin.js" defer></script>
+</body>
+</html>
