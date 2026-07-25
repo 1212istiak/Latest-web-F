@@ -1,92 +1,131 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TVR Dubbers — Admin</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-  <link rel="stylesheet" href="./styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - TVR Dubbers</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-wrap { max-width: 900px; margin: 0 auto; padding: 2rem; }
+    .admin-card { padding: 1.5rem; border-radius: var(--radius); margin-bottom: 1.5rem; }
+    .admin-form { display: grid; gap: 1rem; }
+    .admin-form input, .admin-form textarea, .admin-form select {
+      padding: 0.85rem 1rem; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--text); font-family: inherit;
+    }
+    .admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+    .admin-item { padding: 1rem; border-radius: 12px; background: var(--surface-2); }
+    .tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .tab { padding: 0.6rem 1.2rem; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; }
+    .tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .danger { background: #c0392b; }
+    .pending-comment { margin-bottom: 1rem; }
+  </style>
 </head>
-<body class="dark admin-body">
-  <header class="site-header">
-    <div class="brand"><h1 class="cycle">TVR Dubbers — Admin</h1></div>
-    <div class="header-tools">
-      <a class="btn btn-ghost" href="/">← Back to site</a>
-      <button id="logout" class="btn btn-ghost">Logout</button>
-    </div>
+<body>
+  <canvas id="particles"></canvas>
+  <div class="custom-cursor" id="cursor"></div>
+
+  <header class="glass">
+    <div class="logo">TVR Dubbers Admin</div>
+    <nav>
+      <a href="index.html">Site</a>
+      <button id="logout" class="btn btn-secondary" style="padding:0.5rem 1rem; font-size:0.85rem">Logout</button>
+    </nav>
   </header>
 
-  <main class="admin-main">
-    <section id="admin-login" class="glass card">
-      <h2>Login</h2>
-      <form id="login-form">
-        <input type="password" name="password" placeholder="Admin password" required />
-        <button class="btn btn-primary" type="submit">Log in</button>
+  <main class="admin-wrap">
+    <div id="login-panel" class="admin-card glass">
+      <h2>Admin Login</h2>
+      <form class="admin-form" id="login-form" style="max-width:400px; margin-top:1rem">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit" class="btn btn-primary">Login</button>
       </form>
-    </section>
+      <p id="login-error" style="color:var(--accent); margin-top:1rem; display:none">Invalid credentials</p>
+    </div>
 
-    <div id="admin-panel" hidden>
-      <nav class="admin-tabs">
-        <button data-tab="upload" class="active">Upload Episode</button>
-        <button data-tab="trailer">Trailer</button>
-        <button data-tab="episodes">Edit/Delete</button>
-        <button data-tab="settings">Site Settings</button>
-        <button data-tab="links">Links</button>
-        <button data-tab="artists">Voice Artists</button>
-        <button data-tab="password">Password</button>
-        <button data-tab="comments">Comments</button>
-      </nav>
+    <div id="admin-panel" style="display:none">
+      <div class="tabs">
+        <button class="tab active" data-tab="episodes">Episodes</button>
+        <button class="tab" data-tab="trailer">Trailer</button>
+        <button class="tab" data-tab="artists">Artists</button>
+        <button class="tab" data-tab="settings">Settings</button>
+        <button class="tab" data-tab="comments">Comments</button>
+      </div>
 
-      <section data-panel="upload" class="glass card">
-        <h2>Upload New Episode</h2>
-        <form id="upload-form" class="grid-form"></form>
-      </section>
+      <div id="tab-episodes" class="tab-content active">
+        <div class="admin-card glass">
+          <h3>Add / Update Episode</h3>
+          <form class="admin-form" id="episode-form">
+            <input type="hidden" id="ep-id">
+            <input type="text" id="ep-title" placeholder="Episode title" required>
+            <input type="number" id="ep-number" placeholder="Episode number" required>
+            <input type="url" id="ep-thumb" placeholder="Thumbnail URL">
+            <input type="text" id="ep-server1" placeholder="Server 1 URL (Dailymotion/Rumble)" required>
+            <input type="text" id="ep-server2" placeholder="Server 2 URL (optional)">
+            <input type="text" id="ep-server3" placeholder="Server 3 URL (optional)">
+            <textarea id="ep-desc" placeholder="Description"></textarea>
+            <button type="submit" class="btn btn-primary">Save Episode</button>
+          </form>
+        </div>
+        <div class="admin-card glass">
+          <h3>Existing Episodes</h3>
+          <div id="episodes-list" class="admin-grid"></div>
+        </div>
+      </div>
 
-      <section data-panel="trailer" class="glass card" hidden>
-        <h2>Upload / Update Trailer</h2>
-        <form id="trailer-form" class="grid-form"></form>
-      </section>
+      <div id="tab-trailer" class="tab-content">
+        <div class="admin-card glass">
+          <h3>Update Trailer</h3>
+          <form class="admin-form" id="trailer-form">
+            <input type="text" id="trailer-title" placeholder="Trailer title" required>
+            <input type="text" id="trailer-url" placeholder="Trailer URL" required>
+            <input type="url" id="trailer-thumb" placeholder="Trailer thumbnail URL">
+            <button type="submit" class="btn btn-primary">Save Trailer</button>
+          </form>
+        </div>
+      </div>
 
-      <section data-panel="episodes" class="glass card" hidden>
-        <h2>Edit / Delete Episodes</h2>
-        <ul id="episodes-list" class="items-list"></ul>
-      </section>
+      <div id="tab-artists" class="tab-content">
+        <div class="admin-card glass">
+          <h3>Add Voice Artist</h3>
+          <form class="admin-form" id="artist-form">
+            <input type="text" id="artist-name" placeholder="Name" required>
+            <input type="text" id="artist-role" placeholder="Role / Character">
+            <input type="url" id="artist-avatar" placeholder="Avatar URL">
+            <button type="submit" class="btn btn-primary">Add Artist</button>
+          </form>
+        </div>
+        <div class="admin-card glass">
+          <h3>Voice Artists</h3>
+          <div id="artists-list" class="admin-grid"></div>
+        </div>
+      </div>
 
-      <section data-panel="settings" class="glass card" hidden>
-        <h2>Site Settings</h2>
-        <form id="settings-form" class="grid-form"></form>
-      </section>
+      <div id="tab-settings" class="tab-content">
+        <div class="admin-card glass">
+          <h3>Site Settings</h3>
+          <form class="admin-form" id="settings-form">
+            <input type="text" id="site-name" placeholder="Site name">
+            <input type="url" id="site-url" placeholder="Site URL">
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+          </form>
+        </div>
+      </div>
 
-      <section data-panel="links" class="glass card" hidden>
-        <h2>Update Links</h2>
-        <form id="links-form" class="grid-form"></form>
-      </section>
-
-      <section data-panel="artists" class="glass card" hidden>
-        <h2>Voice Artists</h2>
-        <form id="artist-form"><input name="name" placeholder="Full name" required /><button class="btn btn-primary">Add</button></form>
-        <ul id="artists-admin-list" class="items-list"></ul>
-      </section>
-
-      <section data-panel="password" class="glass card" hidden>
-        <h2>Change Admin Password</h2>
-        <form id="password-form" class="grid-form">
-          <label>Current<input type="password" name="current" required></label>
-          <label>New<input type="password" name="next" required minlength="6"></label>
-          <label>Confirm<input type="password" name="confirm" required minlength="6"></label>
-          <button class="btn btn-primary">Update</button>
-        </form>
-      </section>
-
-      <section data-panel="comments" class="glass card" hidden>
-        <h2>Comment Moderation</h2>
-        <ul id="comments-mod-list" class="items-list"></ul>
-      </section>
+      <div id="tab-comments" class="tab-content">
+        <div class="admin-card glass">
+          <h3>Pending Comments</h3>
+          <div id="pending-comments"></div>
+        </div>
+      </div>
     </div>
   </main>
 
-  <div id="toast" class="toast" hidden></div>
-  <script src="./config.js"></script>
-  <script src="./admin.js" defer></script>
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>
